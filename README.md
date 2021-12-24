@@ -10,5 +10,5 @@
 ### 三、详细
 代码做了全面注释，使用到的js文件说明如下：
 1. 词云插件 tagcanvas.js：[https://www.goat1000.com/tagcanvas.php](https://www.goat1000.com/tagcanvas.php)；
-2. Vue.js：[https://cn.vuejs.org/(https://cn.vuejs.org/)；
+2. Vue.js：[https://cn.vuejs.org](https://cn.vuejs.org/)；
 3. zepto.js：功能基本同Jq；

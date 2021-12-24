@@ -253,6 +253,21 @@
             margin-top: 3px;
         }
 
+        /*对联*/
+        .result .couplet{
+            font-family: 华文行楷;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            width: 100px;
+            height: 70vh;
+            background-color: #d90505;
+            border-radius: 1px;
+            box-shadow:  rgba(255, 241, 0, 0.38) 1px 1px 10px 1px, rgba(255, 241, 0, 0.38) -1px -1px 10px 1px;
+            color: #fff100;
+            font-size: 5rem;
+        }
+
     </style>
 </head>
 <body>
@@ -278,6 +293,7 @@
         <!--展示页面-->
         <div id="result" class="result" v-if="running == 2 || showResult"
              :style="{backgroundImage:'url('+(showResult?'img/borad.png':'img/alert.png')+')'}">
+            <div class="couplet">牛聚成云天降玉</div>
             <div class="display">
                 <!--输出抽奖结果-->
                 <template v-if="!showResult">
@@ -294,6 +310,7 @@
                     </ul>
                 </template>
             </div>
+                <div class="couplet">虎来踏露地生金</div>
         </div>
     </transition>
 </div>
@@ -349,7 +366,7 @@
 
         /*词云的旋转速度*/
         var speed = function () {
-            return [0.5,0.1];
+            return [0.2,0.08];
         };
 
 
@@ -394,9 +411,10 @@
                 }
 
                 /*如何已经被抽奖抽中了，显示黄色的名字*/
-                var color = choosed[item.name] ? '#fcf900' : 'white';
+                if(!choosed[item.name]){
+                    html.push('<li><a href="#">' + item.name + '</a></li>');
+                }
 
-                html.push('<li><a href="#" style="color: ' + color + ';">' + item.name + '</a></li>');
 
             });
 
@@ -430,9 +448,9 @@
             * 第二个参数是 词云的列表dom（ul、li），如果列表是直接插入canvas 的innerhtml则无需指定
             * */
             TagCanvas.Start('myCanvas', '', {
-                textColour: null,
+                textColour: "#FFD700",
                 initial: speed(),
-                textHeight: 28,
+                textHeight:36,
                 zoom: 1.05,
                 dragControl: true
             });

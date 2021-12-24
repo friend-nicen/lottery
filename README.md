@@ -1,6 +1,6 @@
 ### 一、说明
 年会抽奖程序，乐呵乐呵哈。
-**基于**[fouber/lottery](https://www.runoob.com)，二次开发。
+**基于**[fouber/lottery](https://github.com/fouber/lottery)，二次开发。
 
 抽奖名单在`js/member.js`里。
 

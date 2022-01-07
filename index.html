@@ -51,6 +51,61 @@
 
 
         }
+        /*结果内部元素的布局*/
+        .result .displays {
+            width: 70%;
+            height: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: flex-start;
+            flex-wrap: wrap;
+        }
+        .result .displays ul{
+            margin-top: 20px;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: -18vh;
+            margin-right: 0;
+        }
+        .result .displays ul li{
+            width: 16%;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+        }
+        .result .displays ul li .success{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .result .displays ul li .success .span{
+            display: inline;
+            margin-top: 10px;
+            color: #fff100;
+            background-color: red;
+            padding: 5px 18px;
+            font-size: 18px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+
+
+
+        .result .displays ul li img{
+            width: 100%;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 5px;
+            max-width: 20vh;
+        }
 
         /*结果内部元素的布局*/
         .result .display {
@@ -269,6 +324,9 @@
         }
 
     </style>
+    <!--引入vue-->
+    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/2.6.14/vue.js"
+            type="application/javascript"></script>
 </head>
 <body>
 
@@ -292,23 +350,25 @@
     <transition name="fade">
         <!--展示页面-->
         <div id="result" class="result" v-if="running == 2 || showResult"
-             :style="{backgroundImage:'url('+(showResult?'img/borad.png':'img/alert.png')+')'}">
+             :style="{backgroundImage:!showResult?'url(img/alert.png)':'none'}">
             <div class="couplet">牛聚成云天降玉</div>
-            <div class="display">
+
+            <div class="display" v-if="!showResult">
                 <!--输出抽奖结果-->
-                <template v-if="!showResult">
-                    <img :src="'img/'+prizes[position].level+'.jpg'"/>
+                    <img :src="prizes[position].url"/>
                     <div class="down">
                         <div class="item1">{{prizes[position].name}}</div>
-                        <div class="item2">{{person[person.length - 1].name}}</div>
+                        <div class="item2">{{prizes[position].person}}</div>
                     </div>
-                </template>
-                <!--输出中奖名单-->
-                <template v-else>
+            </div>
+            <!--输出中奖名单-->
+            <div class="displays" v-else>
                     <ul>
-                        <li v-for="item of person"><span>{{item.level}}</span>{{item.name}}</li>
+                        <li v-for="item of prizesRverese" :style="style[item.level-1]">
+                            <img :src="item.url">
+                            <div class="success"><div class="span">{{item.person==""?item.name:"中奖人："+item.person}}</div></div>
+                        </li>
                     </ul>
-                </template>
             </div>
                 <div class="couplet">虎来踏露地生金</div>
         </div>
@@ -316,9 +376,7 @@
 </div>
 
 <!--引入jq-->
-<script type="text/javascript" src="js/zepto.js"></script>
-<!--引入vue-->
-<script type="text/javascript" src="js/vue.js"></script>
+<script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/zepto/1.2.0/zepto.min.js" type="application/javascript"></script>
 <!--引入layui-->
 <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/layui/2.5.7/layui.all.js"
         type="application/javascript"></script>
@@ -336,6 +394,14 @@
 
         /*画布DOM*/
         var canvas;
+
+        let temp=[];
+
+        member.forEach(function (item,index){
+            temp.push({name:item,index:index});
+        })
+        member=temp;
+
 
         /*清除抽奖记录*/
         localStorage.clear();
@@ -379,13 +445,15 @@
 
             let max= member.length;
 
+            console.log(choosed);
+
             member.forEach(function (item, index) {
 
                 item.index = index;
 
-                if(index == 2){
+              /*  if(index == 2){
 
-                    /*写入不同的奖品图片*/
+                    /!*写入不同的奖品图片*!/
                     if(self.currentLevel == 0){
 
                         html.push('<li><a href="#"><img style="width: 50px" src="img/1.jpg"/></a></li>');
@@ -394,23 +462,25 @@
 
                 if(index == Math.ceil(max/2)){
 
-                    /*写入不同的奖品图片*/
+                    /!*写入不同的奖品图片*!/
                     if(self.currentLevel <= 2 && self.currentLevel>=0) {
                         html.push('<li><a href="#"><img style="width: 50px" src="img/2.jpg"/></a></li>');
                     }
 
-                }
+                }*/
 
-                if(index == (max-2)){
+                /*   if(index == (max-2)){
 
-                    /*写入不同的奖品图片*/
+                    /!*写入不同的奖品图片*!/
                     if(self.currentLevel <= 3 && self.currentLevel>=0) {
                         html.push('<li><a href="#"><img style="width:  50px" src="img/3.jpg"/></a></li>');
                     }
 
-                }
+                }*/
 
                 /*如何已经被抽奖抽中了，显示黄色的名字*/
+                console.log(!choosed[item.name]);
+
                 if(!choosed[item.name]){
                     html.push('<li><a href="#">' + item.name + '</a></li>');
                 }
@@ -450,7 +520,7 @@
             TagCanvas.Start('myCanvas', '', {
                 textColour: "#FFD700",
                 initial: speed(),
-                textHeight:36,
+                textHeight:42,
                 zoom: 1.05,
                 dragControl: true
             });
@@ -514,9 +584,6 @@
 
                     choosed[m.name] = 1;
 
-                    /*改变被选名单的标签颜色*/
-                    list[m.index].style.color = color;
-
                     /*重新合并*/
                     return m.name;
 
@@ -548,29 +615,61 @@
                 status: ["抽奖", "停！", "继续"],
 
                 /*抽奖奖品和数量*/
-                prize: [
+                prizes: [
                     {
-                        name: "一等奖 iPhone 13 Pro", number: 1
+                        name:"三等奖 小米加湿器", level: 3,"url":"/img/prize/9.jpg",person:""
                     },
                     {
-                        name: "二等奖 拍立得", number: 3
+                        name:"三等奖 小米电动牙刷", level: 3,"url":"/img/prize/8.jpg",person:""
                     },
                     {
-                        name: "三等奖 配置未知", number: 3
+                        name:"三等奖 小米手环", level: 3,"url":"/img/prize/7.jpg",person:""
+                    },
+                    {
+                        name:"三等奖 小米挂烫机", level: 3,"url":"/img/prize/6.jpg",person:""
+                    },
+                    {
+                        name:"三等奖 小米电热杯", level: 3,"url":"/img/prize/5.jpg",person:""
+                    },
+                    {
+                        name:"二等奖 米家清洁套装", level: 2,"url":"/img/prize/4.jpg",person:""
+                    },
+                    {
+                        name:"二等奖 料理机", level: 2,"url":"/img/prize/3.jpg",person:""
+                    },
+                    {
+                        name: "二等奖 拍立得", level: 2,"url":"/img/prize/2.jpg",person:""
+                    },
+                    {
+                        name:  "一等奖 iPhone 13", level: 1,"url":"/img/prize/1.jpg",person:""
                     }
                 ],
-                /*保存被生成的所有奖品名单*/
-                prizes: [],
                 /*正在抽第几个奖*/
                 position: 0,
-                /*记录中奖人*/
-                person: [],
                 /*是否展示抽奖信息*/
                 showResult: false,
                 /*当前是几等奖*/
-                currentLevel:0
+                currentLevel:0,
+                /*奖品的不同样式*/
+                style:[
+                    {width:"100%"},
+                    {width:"30%"},
+                    {width:"20%"},
+                ]
             },
             /*生命周期-挂载完毕*/
+            computed:{
+                prizesRverese:function (){
+
+                    let temp=[];
+
+                    for (let i = this.prizes.length-1;i>=0;i--){
+                        temp.push(this.prizes[i])
+                    }
+                    console.log(temp)
+                    return temp;
+                }
+            },
             mounted() {
 
                 /*vue实例创建完毕，开始创建词云*/
@@ -581,18 +680,6 @@
                     window.layer = layui.layer;
                 });
 
-                /*生成奖品列表*/
-                let count = 1;
-
-                for (let i of this.prize) {
-
-                    /*加入所有奖品*/
-                    for (let k = 0; k < i.number; k++) {
-                        /*奖品名字和奖品等级*/
-                        this.prizes.push({name: i.name, level: count});
-                    }
-                    count++;
-                }
 
             },
             methods: {
@@ -607,22 +694,7 @@
                     }
 
                     let index = layer.confirm('确定要重置么？所有之前的抽奖历史将被清除！', function () {
-
-                        /*重置所有记录*/
-                        localStorage.clear();
-
-                        vm.position=0;
-                        vm.currentLevel=0;
-                        vm.person=[];
-
-
-
-                        $("#myCanvas").remove();
-                        /*重新创建词云*/
-                        createCanvas(vm);
-                        layer.close(index);
-
-
+                        location.reload();
                     });
 
 
@@ -636,6 +708,9 @@
                         this.showResult = !this.showResult;
                         /*进入待抽奖的状态*/
                         this.running = 0;
+
+                        $('#main').removeClass('mask');
+
                         return;
                     }
 
@@ -701,7 +776,8 @@
                             this.currentLevel=this.prizes[this.position].level;
 
                             /*中奖信息*/
-                            this.person.push({name:ret[0],level: level});
+                            this.prizes[this.position].person=ret[0];
+
 
                             /*重新加载人员名单*/
                             /*移除词云*/

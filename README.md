@@ -5,9 +5,9 @@
 抽奖名单在`js/member.js`里。
 
 ### 二、演示
-演示地址：[year.nicen.cn](https://year.nicen.cn) 1.1版
+演示地址：[year.nicen.cn](https://year.nicen.cn) 1.1.1版
 
-演示地址：[year.nicen.cn/1.0](https://year.nicen.cn/1.0) 1.0版
+演示地址：[year.nicen.cn/1.0](https://year.nicen.cn/1.0) 1.1.0版
 
 ### 三、详细
 代码做了全面注释，使用到的js文件说明如下：

@@ -12,3 +12,8 @@
 1. 词云插件 tagcanvas.js：[https://www.goat1000.com/tagcanvas.php](https://www.goat1000.com/tagcanvas.php)；
 2. Vue.js：[https://cn.vuejs.org](https://cn.vuejs.org/)；
 3. zepto.js：功能基本同Jq；
+
+
+### 2022/1/7日修改
+
+1.1版：修改了奖品和结果展示的形式，看一看演示站吧。

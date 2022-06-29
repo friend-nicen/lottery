@@ -4,6 +4,8 @@
 
 抽奖名单在`js/member.js`里。
 
+其他版本的源码都存了标签，不用客气，直接用哈=，=
+
 ### 二、演示
 演示地址：[year.nicen.cn](https://year.nicen.cn) 最新版
 

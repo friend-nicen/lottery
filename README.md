@@ -5,9 +5,13 @@
 抽奖名单在`js/member.js`里。
 
 ### 二、演示
-演示地址：[year.nicen.cn](https://year.nicen.cn) 1.1.1版
+演示地址：[year.nicen.cn](https://year.nicen.cn) 最新版
 
-演示地址：[year.nicen.cn/1.0](https://year.nicen.cn/1.0) 1.1.0版
+演示地址：[year.nicen.cn/1.2](https://year.nicen.cn/1.2) 1.2版
+
+演示地址：[year.nicen.cn/1.1](https://year.nicen.cn/1.1) 1.1
+
+演示地址：[year.nicen.cn/1.0](https://year.nicen.cn/1.0) 1.0版
 
 ### 三、详细
 代码做了全面注释，使用到的js文件说明如下：
@@ -18,9 +22,19 @@
 
 ### 2022/1/7日修改
 
+#### 1.1版：
+
 老板说不行，又改了改
 
-1.1版：
 1. 修改了奖品和结果展示的形式，看一看演示站吧。
 2. 增加了对联显示
 3. 去除本地JS，改用公共静态库
+
+### 2022/1/8日修改
+
+#### 1.2版： 
+
+老板还说不行，太low，又改了改，修改了抽奖结果展示的样式
+
+
+

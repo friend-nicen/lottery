@@ -6,9 +6,18 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
     <title>新年快乐 — 年会抽奖小程序</title>
+    <meta name="keywords" content="抽奖H5网页,年会抽奖程序,炫酷的抽奖网页"/>
+    <meta name="description" content="一个用于年会抽奖的炫酷网页！"/>
+    <link href="img/logo.ico" rel="icon">
     <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/layui/2.5.7/css/layui.css" type="text/css"
           rel="stylesheet"/>
     <style type="text/css">
+
+        @font-face {
+            font-family: myfont;
+            src: url('js/xk.ttf');
+        }
+
         /*全局大小*/
         body, html {
             width: 100%;
@@ -51,61 +60,79 @@
 
 
         }
-        /*结果内部元素的布局*/
-        .result .displays {
-            width: 70%;
-            height: 50%;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            align-content: flex-start;
-            flex-wrap: wrap;
-        }
-        .result .displays ul{
-            margin-top: 20px;
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: -18vh;
-            margin-right: 0;
-        }
-        .result .displays ul li{
-            width: 16%;
-            margin: 10px 0;
+
+        /*显示抽奖结果的样式*/
+        .result2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url("img/alert2.png");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-sizing: border-box;
-            flex-wrap: wrap;
+
         }
-        .result .displays ul li .success{
-            width: 100%;
+
+        /*显示抽奖结果的样式*/
+        .result2 .list {
+            width: 85vw;
+            height: 70vh;
+            margin-top: 20vh;
+            display: flex;
+        }
+
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            align-content: center;
+            justify-content: space-between;
+        }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li {
             display: flex;
             justify-content: center;
-        }
-
-        .result .displays ul li .success .span{
-            display: inline;
-            margin-top: 10px;
-            color: #fff100;
-            background-color: red;
-            padding: 5px 18px;
-            font-size: 18px;
-            border-radius: 10px;
-            font-weight: bold;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 10px;
+            background-image: url("img/bg.png");
+            background-size: 100% 100%;
         }
 
 
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li img {
+            width: 50%;
+            margin: 10px 25%;
+        }
 
-
-        .result .displays ul li img{
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li .title {
             width: 100%;
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.37);
-            border-radius: 5px;
-            max-width: 20vh;
+            margin-top: 15px;
+            color: #a90808;
+            font-size: 28px;
         }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li .footer {
+            width: 80%;
+            background-image: url("img/bg2.png");
+            margin-bottom: 0;
+            background-size: 100% 100%;
+            color: #ffffff;
+            font-size: 25px;
+            padding: 3px;
+        }
+
 
         /*结果内部元素的布局*/
         .result .display {
@@ -138,7 +165,7 @@
         /*奖品名字*/
         .result .display .down .item1 {
             text-align: center;
-            font-size: 20px;
+            font-size: 25px;
             font-weight: bold;
         }
 
@@ -290,18 +317,20 @@
 
 
         /*过渡效果*/
-        .result ul{
-            margin-top:35%;
+        .result ul {
+            margin-top: 35%;
             margin-right: 2%;
             display: block;
             height: 50vh;
             text-align: left;
         }
-        .result ul span{
+
+        .result ul span {
             font-weight: bold;
             margin-right: 25px;
             font-size: 25px;
         }
+
         .result ul li {
             display: block;
             font-size: 24px;
@@ -309,8 +338,8 @@
         }
 
         /*对联*/
-        .result .couplet{
-            font-family: 华文行楷;
+        .result .couplet {
+            font-family: myfont;
             display: flex;
             align-content: center;
             align-items: center;
@@ -318,9 +347,9 @@
             height: 70vh;
             background-color: #d90505;
             border-radius: 1px;
-            box-shadow:  rgba(255, 241, 0, 0.38) 1px 1px 10px 1px, rgba(255, 241, 0, 0.38) -1px -1px 10px 1px;
+            box-shadow: rgba(255, 241, 0, 0.38) 1px 1px 10px 1px, rgba(255, 241, 0, 0.38) -1px -1px 10px 1px;
             color: #fff100;
-            font-size: 5rem;
+            font-size: 70px;
         }
 
     </style>
@@ -344,39 +373,49 @@
     <button class="pure-button button-success" @click="toggleFullScreen">{{fullState}}</button>
     <!--显示抽奖结果-->
     <button class="pure-button button-secondary" @click="showList">结果</button>
-    <button class="pure-button button-warning" @click="reset">重置</button>
+    <button class="pure-button button-warning" style="font-family: myfont;" @click="reset">重置</button>
 
     <!--显示抽奖的结果-->
     <transition name="fade">
         <!--展示页面-->
-        <div id="result" class="result" v-if="running == 2 || showResult"
-             :style="{backgroundImage:!showResult?'url(img/alert.png)':'none'}">
-            <div class="couplet">牛聚成云天降玉</div>
+        <div id="result" class="result" v-if="running == 2">
 
             <div class="display" v-if="!showResult">
                 <!--输出抽奖结果-->
-                    <img :src="prizes[position].url"/>
-                    <div class="down">
-                        <div class="item1">{{prizes[position].name}}</div>
-                        <div class="item2">{{prizes[position].person}}</div>
-                    </div>
+                <img :src="prizes[position].url"/>
+                <div class="down">
+                    <div class="item1">{{prizes[position].prize + " " + prizes[position].name}}</div>
+                    <div class="item2">{{prizes[position].person}}</div>
+                </div>
             </div>
-            <!--输出中奖名单-->
-            <div class="displays" v-else>
-                    <ul>
-                        <li v-for="item of prizesRverese" :style="style[item.level-1]">
-                            <img :src="item.url">
-                            <div class="success"><div class="span">{{item.person==""?item.name:"中奖人："+item.person}}</div></div>
-                        </li>
-                    </ul>
+
+        </div>
+
+
+        <!--结果页面-->
+        <div class="result2" v-if="showResult">
+
+            <div class="list">
+
+                <!--循环输出结果-->
+                <ul>
+                    <li v-for="(item,index) in prizesRverese" :key="index"
+                        :style="{width: item.level == 1?'25%':item.level == 2?'20%':'12%'}">
+                        <div class="title" :style="{fontSize:item.level == 1?'33px':'28px'}">{{item.name}}</div>
+                        <img :src="item.url">
+                        <div class="footer">{{item.person == "" ? item.prize : item.person}}</div>
+                    </li>
+                </ul>
             </div>
-                <div class="couplet">虎来踏露地生金</div>
+
+
         </div>
     </transition>
 </div>
 
 <!--引入jq-->
-<script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/zepto/1.2.0/zepto.min.js" type="application/javascript"></script>
+<script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/zepto/1.2.0/zepto.min.js"
+        type="application/javascript"></script>
 <!--引入layui-->
 <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/layui/2.5.7/layui.all.js"
         type="application/javascript"></script>
@@ -395,12 +434,12 @@
         /*画布DOM*/
         var canvas;
 
-        let temp=[];
+        let temp = [];
 
-        member.forEach(function (item,index){
-            temp.push({name:item,index:index});
+        member.forEach(function (item, index) {
+            temp.push({name: item, index: index});
         })
-        member=temp;
+        member = temp;
 
 
         /*清除抽奖记录*/
@@ -432,7 +471,7 @@
 
         /*词云的旋转速度*/
         var speed = function () {
-            return [0.2,0.08];
+            return [0.2, 0.08];
         };
 
 
@@ -443,31 +482,30 @@
 
             /*遍历存储好的人员名单*/
 
-            let max= member.length;
+            let max = member.length;
 
-            console.log(choosed);
 
             member.forEach(function (item, index) {
 
                 item.index = index;
 
-              /*  if(index == 2){
+                /*  if(index == 2){
 
-                    /!*写入不同的奖品图片*!/
-                    if(self.currentLevel == 0){
+                      /!*写入不同的奖品图片*!/
+                      if(self.currentLevel == 0){
 
-                        html.push('<li><a href="#"><img style="width: 50px" src="img/1.jpg"/></a></li>');
-                    }
-                }
+                          html.push('<li><a href="#"><img style="width: 50px" src="img/1.jpg"/></a></li>');
+                      }
+                  }
 
-                if(index == Math.ceil(max/2)){
+                  if(index == Math.ceil(max/2)){
 
-                    /!*写入不同的奖品图片*!/
-                    if(self.currentLevel <= 2 && self.currentLevel>=0) {
-                        html.push('<li><a href="#"><img style="width: 50px" src="img/2.jpg"/></a></li>');
-                    }
+                      /!*写入不同的奖品图片*!/
+                      if(self.currentLevel <= 2 && self.currentLevel>=0) {
+                          html.push('<li><a href="#"><img style="width: 50px" src="img/2.jpg"/></a></li>');
+                      }
 
-                }*/
+                  }*/
 
                 /*   if(index == (max-2)){
 
@@ -481,7 +519,7 @@
                 /*如何已经被抽奖抽中了，显示黄色的名字*/
                 console.log(!choosed[item.name]);
 
-                if(!choosed[item.name]){
+                if (!choosed[item.name]) {
                     html.push('<li><a href="#">' + item.name + '</a></li>');
                 }
 
@@ -520,7 +558,7 @@
             TagCanvas.Start('myCanvas', '', {
                 textColour: "#FFD700",
                 initial: speed(),
-                textHeight:42,
+                textHeight: 42,
                 zoom: 1.05,
                 dragControl: true
             });
@@ -615,58 +653,58 @@
                 status: ["抽奖", "停！", "继续"],
 
                 /*抽奖奖品和数量*/
+                /* 奖品名、级别、级别、图片、中奖人*/
                 prizes: [
                     {
-                        name:"三等奖 小米加湿器", level: 3,"url":"img/prize/9.jpg",person:""
+                        name: "TBox 茶合", prize: "三等奖 ", level: 3, "url": "img/prize/a11.png", person: ""
                     },
                     {
-                        name:"三等奖 小米电动牙刷", level: 3,"url":"img/prize/8.jpg",person:""
+                        name: "九阳电饭煲", prize: "三等奖 ", level: 3, "url": "img/prize/a10.png", person: ""
                     },
                     {
-                        name:"三等奖 小米手环", level: 3,"url":"img/prize/7.jpg",person:""
+                        name: "小米挂烫机", prize: "三等奖 ", level: 3, "url": "img/prize/a9.png", person: ""
                     },
                     {
-                        name:"三等奖 小米挂烫机", level: 3,"url":"img/prize/6.jpg",person:""
+                        name: "小米加湿器", prize: "三等奖 ", level: 3, "url": "img/prize/a8.png", person: ""
                     },
                     {
-                        name:"三等奖 小米电热杯", level: 3,"url":"img/prize/5.jpg",person:""
+                        name: "小米手环", prize: "三等奖 ", level: 3, "url": "img/prize/a7.png", person: ""
                     },
                     {
-                        name:"二等奖 米家清洁套装", level: 2,"url":"img/prize/4.jpg",person:""
+                        name: "小米电动牙刷", prize: "三等奖 ", level: 3, "url": "img/prize/a6.png", person: ""
                     },
                     {
-                        name:"二等奖 料理机", level: 2,"url":"img/prize/3.jpg",person:""
+                        name: "小米电热杯", prize: "三等奖 ", level: 3, "url": "img/prize/a5.png", person: ""
                     },
                     {
-                        name: "二等奖 拍立得", level: 2,"url":"img/prize/2.jpg",person:""
+                        name: "拍立得", prize: "二等奖 ", level: 2, "url": "img/prize/a4.png", person: ""
                     },
                     {
-                        name:  "一等奖 iPhone 13", level: 1,"url":"img/prize/1.jpg",person:""
+                        name: "料理机", prize: "二等奖", level: 2, "url": "img/prize/a3.png", person: ""
+                    },
+                    {
+                        name: "米家清洁套装", prize: "二等奖", level: 2, "url": "img/prize/a2.png", person: ""
+                    },
+                    {
+                        name: "iPhone 13", prize: "一等奖 ", level: 1, "url": "img/prize/a1.png", person: ""
                     }
                 ],
                 /*正在抽第几个奖*/
                 position: 0,
                 /*是否展示抽奖信息*/
                 showResult: false,
-                /*当前是几等奖*/
-                currentLevel:0,
-                /*奖品的不同样式*/
-                style:[
-                    {width:"100%"},
-                    {width:"30%"},
-                    {width:"20%"},
-                ]
             },
             /*生命周期-挂载完毕*/
-            computed:{
-                prizesRverese:function (){
+            computed: {
 
-                    let temp=[];
+                /*奖品列表*/
+                prizesRverese: function () {
 
-                    for (let i = this.prizes.length-1;i>=0;i--){
+                    let temp = [];
+
+                    for (let i = this.prizes.length - 1; i >= 0; i--) {
                         temp.push(this.prizes[i])
                     }
-                    console.log(temp)
                     return temp;
                 }
             },
@@ -701,10 +739,22 @@
                 },
                 toggle: function () {
 
+
+                    if (this.position >= this.prizes.length) {
+
+                        /*所有奖品抽完了，当前奖品等级0*/
+                        this.running = 0;
+
+                        layer.msg("所有奖品都抽完了！");
+                        return;
+
+                    }
+
                     /*判断是否正在抽奖*/
 
                     /*是否展示了抽奖结果*/
                     if (this.showResult) {
+
                         this.showResult = !this.showResult;
                         /*进入待抽奖的状态*/
                         this.running = 0;
@@ -716,7 +766,6 @@
 
                     /*如果正在抽奖*/
                     if (this.running == 1) {
-
 
                         /*将词云的速度转换为正常速度*/
                         TagCanvas.SetSpeed('myCanvas', speed());
@@ -734,20 +783,6 @@
 
                             return;
 
-                        } else if (this.position >= this.prizes.length) {
-
-                            /*所有奖品抽完了，当前奖品等级0*/
-                            this.currentLevel=999;
-
-                            this.running = 0;
-
-                            layer.msg("所有奖品都抽完了！");
-                            /*移除词云*/
-                            $("#myCanvas").remove();
-                            /*重新创建词云*/
-                            createCanvas(this);
-                            return;
-
                         } else {
 
                             $('#main').addClass('mask');
@@ -755,28 +790,28 @@
                             /*$('#result').find(".item2").text(ret[0]);
                             $('#result').fadeIn();
                             */
-                            let level="";
+                            let level = "";
 
 
                             /*判断当前的奖品等级*/
-                            switch (this.prizes[this.position].level){
+                            switch (this.prizes[this.position].level) {
+
                                 case 1:
-                                    level="一等奖";
+                                    level = "一等奖";
                                     break;
                                 case 2:
-                                    level="二等奖";
+                                    level = "二等奖";
                                     break;
                                 case 3:
-                                    level="三等奖";
+                                    level = "三等奖";
                                     break;
                                 default:
+
                             }
 
-                            /*当前奖品的等级*/
-                            this.currentLevel=this.prizes[this.position].level;
 
                             /*中奖信息*/
-                            this.prizes[this.position].person=ret[0];
+                            this.prizes[this.position].person = ret[0];
 
 
                             /*重新加载人员名单*/
@@ -784,7 +819,6 @@
                             $("#myCanvas").remove();
                             /*重新创建词云*/
                             createCanvas(this);
-
 
 
                             /*记录中奖时间和名单到本地*/
@@ -828,14 +862,19 @@
                         return;
                     }
 
+                    /*是否处于全屏*/
                     if (!document.fullscreenElement) {
+
                         this.fullState = "正常";
                         document.documentElement.requestFullscreen();
+
                     } else {
+
                         if (document.exitFullscreen) {
                             this.fullState = "全屏";
                             document.exitFullscreen();
                         }
+
                     }
                 },
                 /*显示中奖名单*/
@@ -850,9 +889,9 @@
                     /*进入待抽奖的状态*/
                     this.running = 0;
 
-                    if(this.showResult){
+                    if (this.showResult) {
                         $('#main').removeClass('mask');
-                    }else{
+                    } else {
                         $('#main').addClass('mask');
                     }
 

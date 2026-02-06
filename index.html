@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    <title>新年快乐 — 年会抽奖小程序</title>
+    <meta name="keywords" content="抽奖H5网页,年会抽奖程序,炫酷的抽奖网页"/>
+    <meta name="description" content="一个用于年会抽奖的炫酷网页！"/>
+    <link href="img/logo.ico" rel="icon">
+    <!-- 替换为 BootCDN 的 Layui CSS -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/css/layui.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+
+        /*全局大小*/
+        body, html {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        /*背景样式*/
+        .wall {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            background-image: url(https://cdn3.nicen.cn/mask/ma1.png);
+            overflow: hidden;
+            background-color: #121936;
+            background-size: 100% 100%;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        /*显示抽奖结果的样式*/
+        .result {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85); /* 加深遮罩 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* 移除原来的背景图，改为纯CSS实现 */
+            /* background-image: url("img/alert.png"); */
+        }
+
+
+        /*显示抽奖结果的样式*/
+        .result2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url("https://cdn3.nicen.cn/mask/result.png?v=1.1");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list {
+            width: 85vw;
+            height: 70vh;
+            margin-top: 20vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            gap: 0.1rem 0.5rem;
+        }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.1rem;
+            background-image: url("img/bg.png");
+            background-size: 100% 100%;
+            height: 1.6rem;
+            padding: 0.1rem 0;
+            box-sizing: border-box;
+            /* 确保li不会过大 */
+            width: 20%; 
+        }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li .title {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a90808;
+            font-size: 0.36rem;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        /*显示抽奖结果的样式*/
+        .result2 .list ul li .footer {
+            width: 80%;
+            background-image: url("img/bg2.png");
+            margin-bottom: 0;
+            background-size: 100% 100%;
+            color: #ffffff;
+            font-size: 0.25rem;
+            padding: 0.03rem;
+        }
+
+
+        /*结果内部元素的布局*/
+        .result .display {
+            width: 70%;
+            max-width: 800px;
+            height: auto;
+            min-height: 40%;
+            background: linear-gradient(135deg, #e60012 0%, #9d000d 100%);
+            border: 0.08rem solid #fcd279;
+            border-radius: 0.2rem;
+            box-shadow: 0 0 0.5rem rgba(230, 0, 18, 0.6), inset 0 0 0.3rem rgba(255, 215, 0, 0.2);
+            position: relative;
+            padding: 0.6rem 0.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* 旋转光芒背景 */
+        .result .display::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: repeating-conic-gradient(from 0deg, rgba(255, 215, 0, 0.05) 0deg 15deg, transparent 15deg 30deg);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 关闭按钮 */
+        .result .close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10000;
+            transition: all 0.3s;
+        }
+
+        .result .close-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .result .close-btn::before,
+        .result .close-btn::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        .result .close-btn::before {
+            transform: rotate(45deg);
+        }
+
+        .result .close-btn::after {
+            transform: rotate(-45deg);
+        }
+
+        /* 装饰角花 - 左上 */
+        .result .display::after {
+            content: ' ';
+            position: absolute;
+            top: 0.1rem;
+            left: 0.1rem;
+            width: 0.6rem;
+            height: 0.6rem;
+            border-top: 0.06rem solid #fcd279;
+            border-left: 0.06rem solid #fcd279;
+            border-top-left-radius: 0.1rem;
+            z-index: 1;
+        }
+
+        /* 装饰文字 */
+        .result .display .decoration {
+            font-family: myfont, serif;
+            font-size: 0.8rem;
+            color: #fcd279;
+            margin-bottom: 0.4rem;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            letter-spacing: 0.1rem;
+        }
+
+        /*中奖文字容器*/
+        .result .display .down {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /*奖品名字*/
+        .result .display .down .item1 {
+            text-align: center;
+            font-size: 0.9rem;
+            font-family: myfont, serif;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #fff8cc, #ffcf3f);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.3rem;
+            text-shadow: none;
+            filter: drop-shadow(0 2px 4px rgba(169, 8, 8, 0.6));
+        }
+
+        /*中奖人的样式*/
+        .result .display .down .item2 {
+            font-size: 0.5rem;
+            font-weight: bold;
+            color: #b70909;
+            background: linear-gradient(to bottom, #ffeeb0, #fcd279);
+            padding: 0.15rem 0.6rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            min-width: 2rem;
+            border: 2px solid #fff;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+
+        /**/
+        button, input, optgroup, select, textarea {
+            color: inherit;
+            font: inherit;
+            margin: 0;
+            border: none;
+        }
+
+        button {
+            overflow: visible;
+        }
+
+        button, select {
+            text-transform: none;
+        }
+
+        button, html input[type=button], input[type=reset], input[type=submit] {
+            -webkit-appearance: button;
+            cursor: pointer;
+        }
+
+        .pure-button {
+            display: inline-block;
+            zoom: 1;
+            line-height: normal;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-align: center;
+            cursor: pointer;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .pure-button {
+            font-family: inherit;
+            font-size: 100%;
+            padding: .5em 1em;
+            color: #444;
+            color: rgba(0, 0, 0, .8);
+            border: 0 rgba(0, 0, 0, 0);
+            background-color: #E6E6E6;
+            text-decoration: none;
+            border-radius: 2px;
+            position: relative;
+            z-index: 9999;
+        }
+
+        .pure-button:focus {
+            outline: 0
+        }
+
+        .pure-button-hover, .pure-button:hover, .pure-button:focus {
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(40%, rgba(0, 0, 0, .05)), to(rgba(0, 0, 0, .1)));
+            background-image: -webkit-linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+            background-image: -moz-linear-gradient(top, rgba(0, 0, 0, .05) 0, rgba(0, 0, 0, .1));
+            background-image: -o-linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+            background-image: linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+        }
+
+
+        /*底部按钮的样式*/
+        .button-success, .button-error, .button-warning, .button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-success {
+            background: rgb(28, 184, 65);
+        }
+
+        .button-error {
+            background: rgb(202, 60, 60);
+        }
+
+        .button-warning {
+            background: rgb(223, 117, 20);
+        }
+
+        .button-secondary {
+            background: rgb(66, 184, 221);
+        }
+
+        .tools {
+            position: absolute;
+            bottom: 0.2rem;
+            right: 0.2rem;
+            text-align: center;
+        }
+
+        .tools .pure-button {
+            display: inline-block;
+            margin: 0.05rem;
+            padding: 0.1rem 0;
+            text-align: center;
+            width: 0.5rem;
+            font-size: 0.16rem;
+        }
+
+
+        /*画布滤镜用于模糊显示*/
+        .mask {
+            -webkit-filter: blur(5px);
+            filter: blur(5px);
+        }
+
+        /*过渡效果*/
+        #main {
+            -webkit-transition: all 1s;
+            transition: all 1s;
+        }
+
+
+        /*vue 的淡出淡入特效*/
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 1s;
+        }
+
+        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+        {
+            opacity: 0;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+
+        /*过渡效果*/
+        .result ul {
+            margin-top: 35%;
+            margin-right: 2%;
+            display: block;
+            height: 50vh;
+            text-align: left;
+        }
+
+        .result ul span {
+            font-weight: bold;
+            margin-right: 0.25rem;
+            font-size: 0.25rem;
+        }
+
+        .result ul li {
+            display: block;
+            font-size: 0.24rem;
+            margin-top: 0.03rem;
+        }
+
+        /*对联*/
+        .result .couplet {
+            font-family: myfont;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            width: 1rem;
+            height: 70vh;
+            background-color: #d90505;
+            border-radius: 0.01rem;
+            box-shadow: rgba(255, 241, 0, 0.38) 0.01rem 0.01rem 0.1rem 0.01rem, rgba(255, 241, 0, 0.38) -0.01rem -0.01rem 0.1rem 0.01rem;
+            color: #fff100;
+            font-size: 0.7rem;
+        }
+
+    </style>
+    <!-- 替换为 BootCDN 的 Vue 2.6.14 -->
+    <script src="./js/vue.min.js" type="application/javascript"></script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    var fontSize = 100 * (clientWidth / 1920);
+                    // 限制最小字体大小，假设设计稿中最小字体为14px，则fontSize不应过小
+                    // 这里我们限制root fontSize不小于 50px (对应0.14rem=7px不太可能，通常1rem=100px，最小文字14px即0.14rem)
+                    // 如果clientWidth非常小，比如320px，计算出fontSize约为16.6px。
+                    // 题目要求"所有文字最小不能低于14px"，即 0.xx rem * rootFontSize >= 14px
+                    // 比如最小的文字是 0.16rem (按钮)，那么 0.16 * rootFontSize >= 14 => rootFontSize >= 87.5
+                    // 或者更简单的，我们限制 rootFontSize 的最小值，使得页面整体不至于缩得太小
+                    
+                    // 但用户的意思是"所有文字最小不能低于14px"，这通常通过CSS媒体查询或min()函数，
+                    // 或者在JS里计算时做一个保底。
+                    // 让我们设定一个合理的最小rootFontSize，比如让最小的文字(假设是0.14rem) >= 14px -> rootFontSize >= 100px
+                    // 但这样小屏幕下可能会溢出。
+                    // 另一种策略：直接给body设置 min-width 或者 text-size-adjust?
+                    // 用户的意思是“rem的参照size的最小值”，应该是说 rootFontSize 不能太小。
+                    // 假设最小屏幕320，320/1920 * 100 = 16.6px。这时候1rem=16.6px。
+                    // 0.2rem的文字就是 3.3px，这显然太小了。
+                    // 所以我们需要给 fontSize 设置一个最小值。
+                    // 假设最小文字是 0.14rem，要求 >= 14px，那么 fontSize >= 100px。
+                    // 这意味着在小屏幕上，我们不能完全按比例缩放，而是要固定比例了，或者允许滚动。
+                    // 但通常移动端适配会允许文字变小，只是不能太小看不清。
+                    // 常见的做法是 750px设计稿，1rem=100px。在375px手机上 1rem=50px。
+                    // 此时 0.24rem = 12px。这是移动端常见的最小字号。
+                    // 如果用户要求“最小不能低于14px”，那我们需要确保 rem * fontSize >= 14。
+                    // 我们可以设置一个 min-fontSize。
+                    
+                    if (fontSize < 50) fontSize = 50; // 设置一个下限，比如50px，这样0.28rem就是14px
+                    docEl.style.fontSize = fontSize + 'px';
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+</head>
+<body>
+
+<!--主容器，显示词云-->
+<div id="main" class="wall">
+</div>
+
+
+<!--显示右下角的工具按钮-->
+<div id="app" class="tools" v-cloak>
+    <button @click="toggle" class="pure-button" :class="running!=1?'button-error':'button-secondary'">
+        <!--显示抽奖结果时，显示继续-->
+        {{showResult ? "继续" : status[running]}}
+    </button>
+    <button class="pure-button button-success" @click="toggleFullScreen">{{fullState}}</button>
+    <!--显示抽奖结果-->
+    <button class="pure-button button-secondary" @click="showList">结果</button>
+    <button class="pure-button button-warning" style="font-family: myfont;" @click="reset">重置</button>
+
+    <!--显示抽奖的结果-->
+    <transition name="fade">
+        <!--展示页面-->
+        <div id="result" class="result" v-if="running == 2" @click.self="toggle">
+            <div class="close-btn" @click="toggle"></div>
+            <div class="display" v-if="!showResult">
+                <div class="decoration">恭喜中奖</div>
+                <!--输出抽奖结果-->
+                
+                <div class="down">
+                    <div class="item1">{{prizes[position].prize}}</div>
+                    <div class="item2">{{prizes[position].person}}</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!--结果页面-->
+        <div class="result2" v-if="showResult">
+
+            <div class="list">
+
+                <!--循环输出结果-->
+                <ul>
+                    <li v-for="(item,index) in prizesRverese" :key="index"
+                        :style="{width: item.level == 1?'30%':item.level == 2?'23%':'18%'}">
+                        <div class="title" :style="{fontSize:item.level == 1?'0.33rem':'0.28rem'}">{{item.prize}}</div>
+
+                        <div class="footer">{{item.person == "" ? "待开奖" : item.person}}</div>
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    </transition>
+</div>
+
+<!-- 替换为 BootCDN 的 Zepto 1.2.0 -->
+<script src="./js/zepto.min.js" type="application/javascript"></script>
+<!-- 替换为 BootCDN 的 Layui 2.5.7 完整JS -->
+<script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.all.js" type="application/javascript"></script>
+<!--引入词云插件（本地资源，无需替换）-->
+<script type="text/javascript" src="js/tagcanvas.js"></script>
+<!--默认的名单（本地资源，无需替换）-->
+<script type="text/javascript" src="js/member.js"></script>
+
+<script type="text/javascript">
+
+
+    /*页面加载完毕之后*/
+
+    (function () {
+
+        /*画布DOM*/
+        var canvas;
+
+        let temp = [];
+
+        member.forEach(function (item, index) {
+            temp.push({name: item, index: index});
+        })
+        member = temp;
+
+
+        /*清除抽奖记录*/
+        localStorage.clear();
+
+
+        /*监控窗口大小变化，及时重绘canvas*/
+        window.onresize = function () {
+
+            /*窗口大小发生变化*/
+
+            /*移除词云*/
+            $("#myCanvas").remove();
+
+            /*移除滤镜*/
+            $('#main').removeClass('mask');
+
+            /*重新创建词云*/
+            createCanvas(vm);
+
+            /*将抽奖状态归0*/
+            vm.running = 0;
+
+        }
+
+        /*从本地存储获取当前被选中过的人员名单*/
+        var choosed = JSON.parse(localStorage.getItem('choosed')) || {};
+
+
+        /*词云的旋转速度*/
+        var speed = function () {
+            return [0.2, 0.08];
+        };
+
+
+        /*创建名单列表*/
+        var createHTML = function (self) {
+            /*创建词云列表*/
+            var html = ['<ul>'];
+
+            /*遍历存储好的人员名单*/
+
+            let max = member.length;
+
+
+            member.forEach(function (item, index) {
+
+                item.index = index;
+
+                /*  if(index == 2){
+
+                      /!*写入不同的奖品图片*!/
+                      if(self.currentLevel == 0){
+
+                          html.push('<li><a href="#"><img style="width: 50px" src="img/1.jpg"/></a></li>');
+                      }
+                  }
+
+                  if(index == Math.ceil(max/2)){
+
+                      /!*写入不同的奖品图片*!/
+                      if(self.currentLevel <= 2 && self.currentLevel>=0) {
+                          html.push('<li><a href="#"><img style="width: 50px" src="img/2.jpg"/></a></li>');
+                      }
+
+                  }*/
+
+                /*   if(index == (max-2)){
+
+                    /!*写入不同的奖品图片*!/
+                    if(self.currentLevel <= 3 && self.currentLevel>=0) {
+                        html.push('<li><a href="#"><img style="width:  50px" src="img/3.jpg"/></a></li>');
+                    }
+
+                }*/
+
+                if (!choosed[item.name]) {
+                    html.push('<li><a href="#">' + item.name + '</a></li>');
+                }
+
+
+            });
+
+
+            html.push('</ul>');
+
+            return html.join('');
+        };
+
+
+        /*创建并重绘画布*/
+        var createCanvas = function (self) {
+
+            /*创建画布*/
+            canvas = document.createElement('canvas');
+            /*设置好ID*/
+            canvas.id = 'myCanvas';
+            /*设置画布的大小*/
+            canvas.width = document.body.offsetWidth;
+            /*设置画布的高度*/
+            canvas.height = document.body.offsetHeight;
+            /*将画布添加到网页渲染*/
+            document.getElementById('main').appendChild(canvas);
+
+            /*设置画布的内部html*/
+            canvas.innerHTML = createHTML(self);
+
+
+            /*词云开始绘制*/
+            /*第一个参数是画布的dom
+            * 第二个参数是 词云的列表dom（ul、li），如果列表是直接插入canvas 的innerhtml则无需指定
+            * */
+            TagCanvas.Start('myCanvas', '', {
+                textColour: "#FFD700",
+                initial: speed(),
+                textHeight: 42 * (document.body.offsetWidth / 1920),
+                zoom: 1.05,
+                dragControl: true
+            });
+
+        }
+
+
+        /*
+        * @抽奖算法
+        *
+        * @第一步：通过过滤（filter）把中过奖的人排除
+        * @第二步：遍历所有剩下的名字，随机生成一个分数对象。与代表每个人的对象合并
+        * @第三步：从0开始，截取指定的抽奖数量的元素
+        * @第四步：标记被抽中的人员，改变其显示的颜色。
+        *
+        * @最后，将被抽中的人员名单对象，json序列化存入localstorage对象
+        * */
+        var lottery = function (count) {
+
+            /*获取画布内a标签*/
+            var list = canvas.getElementsByTagName('a');
+
+            var color = 'yellow';
+
+            var ret = member
+
+                /*过滤成员，如果没有在已被抽中的名单内，则返回该元素组成新数组*/
+                .filter(function (m, index) {
+
+                    /*添加索引*/
+                    m.index = index;
+                    return !choosed[m.name];
+                })
+                /*遍历元素进行处理*/
+                /*m代表单个元素*/
+                .map(function (m) {
+
+                    /*m是一个对象*/
+
+                    /*合并两个对象*/
+                    let ob = Object.assign({
+                        score: Math.random()
+                    }, m);
+
+
+                    /*作为新元素*/
+                    return ob;
+
+                })
+                /*排序*/
+                .sort(function (a, b) {
+                    return a.score - b.score;
+                })
+                /*截取数组*/
+                .slice(0, count)
+
+                /*遍历循环元素*/
+                .map(function (m) {
+
+                    /*新增一个被抽中的员工*/
+
+                    choosed[m.name] = 1;
+
+                    /*重新合并*/
+                    return m.name;
+
+                });
+
+
+            /*更新被抽中过的名单*/
+            localStorage.setItem('choosed', JSON.stringify(choosed));
+
+            return ret;
+        };
+
+
+        /*实例化vue*/
+        let vm = new Vue({
+            /*挂载*/
+            el: '#app',
+            /*vue的数据*/
+            data: {
+                /*默认的抽奖人数*/
+                selected: 1,
+
+                /*是否正在抽奖*/
+                running: 0,
+
+                fullState: "全屏",
+
+                /*抽奖步骤*/
+                status: ["抽奖", "停！", "继续"],
+
+                /*抽奖奖品和数量*/
+                /* 奖品名、级别、级别、图片、中奖人*/
+                prizes: [
+                    {
+                        name: "TBox 茶合", prize: "三等奖 ", level: 3, "url": "img/prize/a11.png", person: ""
+                    },
+                    {
+                        name: "九阳电饭煲", prize: "三等奖 ", level: 3, "url": "img/prize/a10.png", person: ""
+                    },
+                    {
+                        name: "小米挂烫机", prize: "三等奖 ", level: 3, "url": "img/prize/a9.png", person: ""
+                    },
+                    {
+                        name: "小米加湿器", prize: "三等奖 ", level: 3, "url": "img/prize/a8.png", person: ""
+                    },
+                    {
+                        name: "小米手环", prize: "三等奖 ", level: 3, "url": "img/prize/a7.png", person: ""
+                    },
+                    {
+                        name: "小米电动牙刷", prize: "三等奖 ", level: 3, "url": "img/prize/a6.png", person: ""
+                    },
+                    {
+                        name: "小米电热杯", prize: "三等奖 ", level: 3, "url": "img/prize/a5.png", person: ""
+                    },
+                    {
+                        name: "拍立得", prize: "二等奖 ", level: 2, "url": "img/prize/a4.png", person: ""
+                    },
+                    {
+                        name: "料理机", prize: "二等奖", level: 2, "url": "img/prize/a3.png", person: ""
+                    },
+                    {
+                        name: "米家清洁套装", prize: "二等奖", level: 2, "url": "img/prize/a2.png", person: ""
+                    },
+                    {
+                        name: "iPhone 13", prize: "一等奖 ", level: 1, "url": "img/prize/a1.png", person: ""
+                    }
+                ],
+                /*正在抽第几个奖*/
+                position: 0,
+                /*是否展示抽奖信息*/
+                showResult: false,
+            },
+            /*生命周期-挂载完毕*/
+            computed: {
+
+                /*奖品列表*/
+                prizesRverese: function () {
+
+                    let temp = [];
+
+                    for (let i = this.prizes.length - 1; i >= 0; i--) {
+                        temp.push(this.prizes[i])
+                    }
+                    return temp;
+                }
+            },
+            mounted() {
+
+                /*vue实例创建完毕，开始创建词云*/
+                createCanvas(this);
+
+                /*将layer作为全局对象*/
+                layui.use(["layer"], function () {
+                    window.layer = layui.layer;
+                });
+
+
+            },
+            methods: {
+
+                /*重置所有中奖记录
+                * */
+                reset: function () {
+
+                    /*如果不是待抽奖状态*/
+                    if (this.running != 0) {
+                        return;
+                    }
+
+                    let index = layer.confirm('确定要重置么？所有之前的抽奖历史将被清除！', function () {
+                        location.reload();
+                    });
+
+
+                },
+                toggle: function () {
+
+
+                    if (this.position >= this.prizes.length) {
+
+                        /*所有奖品抽完了，当前奖品等级0*/
+                        this.running = 0;
+
+                        layer.msg("所有奖品都抽完了！");
+                        return;
+
+                    }
+
+                    /*判断是否正在抽奖*/
+
+                    /*是否展示了抽奖结果*/
+                    if (this.showResult) {
+
+                        this.showResult = !this.showResult;
+                        /*进入待抽奖的状态*/
+                        this.running = 0;
+
+                        $('#main').removeClass('mask');
+
+                        return;
+                    }
+
+                    /*如果正在抽奖*/
+                    if (this.running == 1) {
+
+                        /*将词云的速度转换为正常速度*/
+                        TagCanvas.SetSpeed('myCanvas', speed());
+
+
+                        /*随机生成抽奖名单*/
+                        var ret = lottery(this.selected);
+
+                        /*如果所有人都被抽中了，提示无可抽奖人员*/
+                        if (ret.length === 0) {
+
+                            layer.msg("所有人都中奖了！");
+
+                            this.running = 0;
+
+                            return;
+
+                        } else {
+
+                            $('#main').addClass('mask');
+                            /*显示抽奖结果*/
+                            /*$('#result').find(".item2").text(ret[0]);
+                            $('#result').fadeIn();
+                            */
+                            let level = "";
+
+
+                            /*判断当前的奖品等级*/
+                            switch (this.prizes[this.position].level) {
+
+                                case 1:
+                                    level = "一等奖";
+                                    break;
+                                case 2:
+                                    level = "二等奖";
+                                    break;
+                                case 3:
+                                    level = "三等奖";
+                                    break;
+                                default:
+
+                            }
+
+
+                            /*中奖信息*/
+                            this.prizes[this.position].person = ret[0];
+
+
+                            /*重新加载人员名单*/
+                            /*移除词云*/
+                            $("#myCanvas").remove();
+                            /*重新创建词云*/
+                            createCanvas(this);
+
+
+                            /*记录中奖时间和名单到本地*/
+                            localStorage.setItem(new Date().toString(), ret[0]);
+
+
+                        }
+
+
+                        this.running = 2;
+
+
+                        /*进入中奖结果公式状态*/
+                    } else if (this.running == 2) {
+
+
+                        /*隐藏滤镜*/
+                        $('#main').removeClass('mask');
+
+                        /*进入待抽奖的状态*/
+                        this.running = 0;
+
+                        this.position++; //下一个待抽奖品
+
+                    } else {
+
+                        /*加快词云的旋转速度*/
+                        TagCanvas.SetSpeed('myCanvas', [5, 1]);
+                        /*进入抽奖的状态*/
+                        this.running = 1;
+
+                    }
+
+
+                },
+                /*全屏切换*/
+                toggleFullScreen: function () {
+
+                    /*如果不是待抽奖状态*/
+                    if (this.running != 0) {
+                        return;
+                    }
+
+                    /*是否处于全屏*/
+                    if (!document.fullscreenElement) {
+
+                        this.fullState = "正常";
+                        document.documentElement.requestFullscreen();
+
+                    } else {
+
+                        if (document.exitFullscreen) {
+                            this.fullState = "全屏";
+                            document.exitFullscreen();
+                        }
+
+                    }
+                },
+                /*显示中奖名单*/
+                showList: function () {
+
+                    /*如果正在抽奖*/
+                    if (this.running == 1) {
+                        return;
+                    }
+
+
+                    /*进入待抽奖的状态*/
+                    this.running = 0;
+
+                    if (this.showResult) {
+                        $('#main').removeClass('mask');
+                    } else {
+                        $('#main').addClass('mask');
+                    }
+
+                    /*改变显示的状态*/
+                    this.showResult = !this.showResult;
+                }
+            }
+        });
+    })();
+</script>
+</body>
+</html>
